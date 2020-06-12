@@ -12,6 +12,7 @@ const Container = styled.div`
 `;
 
 // TODO: History 내에서 수식 표시할 때 사용
+//?
 const Box = styled.div`
   display: inline-block;
   width: 270px;
