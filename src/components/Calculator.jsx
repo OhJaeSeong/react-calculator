@@ -34,6 +34,9 @@ const evalFunc = function (string) {
     // eslint-disable-next-line no-new-func
     string = string.toString().replace("×", "*");
     string = string.toString().replace("÷", "/");
+    if (string === "√()") {
+        return;
+    }
     string = string.toString().replace("√", "Math.sqrt");
     return new Function("return (" + string + ")")();
 };
