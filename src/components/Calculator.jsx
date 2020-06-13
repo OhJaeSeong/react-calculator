@@ -2,6 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 import Panel from "./Panel";
+import History from "./History";
 import Display from "./Display";
 import ButtonGroup from "./ButtonGroup";
 import Button from "./Button";
@@ -30,18 +31,23 @@ const Box = styled.div`
 `;
 
 const evalFunc = function (string) {
-  // eslint-disable-next-line no-new-func
+    // eslint-disable-next-line no-new-func
+    string = string.toString().replace("×", "*");
+    string = string.toString().replace("÷", "/");
+    string = string.toString().replace("√", "Math.sqrt");
     return new Function("return (" + string + ")")();
 };
 
 class Calculator extends React.Component {
   // TODO: history 추가
   state = {
-    displayValue: ""
+      displayValue: "",
+      history: [],
+      len : 0
   };
 
-  onClickButton = key => {
-    let { displayValue = "" } = this.state;
+    onClickButton = key => {
+        let { displayValue = "", len = 0, history = [] } = this.state;
     displayValue = "" + displayValue;
     const lastChar = displayValue.substr(displayValue.length - 1);
     const operatorKeys = ["÷", "×", "-", "+"];
@@ -57,9 +63,21 @@ class Calculator extends React.Component {
       },
       // TODO: 제곱근 구현
       "√": () => {
-          //if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
-              this.setState({ displayValue: displayValue + "√" });
-          //d}
+         // if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+          displayValue = "√(" + displayValue + ")"
+          history[len] = displayValue.toString();
+          this.setState({ history });
+          len = len + 1;
+          this.setState({ len });
+          
+          //history += displayValue;
+              displayValue = displayValue.toString().replace("√", "");
+              displayValue = "Math.sqrt" + displayValue;
+              displayValue = displayValue.toString().replace("×", "*");
+              displayValue = displayValue.toString().replace("÷", "/");
+              displayValue = evalFunc(displayValue);
+          this.setState({ displayValue });
+         // }
         },
       // TODO: 사칙연산 구현
        "÷": () => {
@@ -87,7 +105,11 @@ class Calculator extends React.Component {
       "=": () => {
           if (lastChar !== "" && operatorKeys.includes(lastChar)) {
           displayValue = displayValue.substr(0, displayValue.length - 1);
-          } else if (lastChar !== "") {   
+          } else if (lastChar !== "") {
+              history[len] = displayValue.toString();
+              this.setState({ history });
+              len = len + 1;
+              this.setState({ len });
               displayValue = displayValue.toString().replace("×", "*");
               displayValue = displayValue.toString().replace("÷", "/");
               if (displayValue.includes("√")) {
@@ -96,7 +118,11 @@ class Calculator extends React.Component {
                   while (displayValue.substr(end, 1) !== "" && displayValue.substr(end, 1) >= '0' && displayValue.substr(end, 1) <= '9') {
                       end = end + 1;
                   }
-                  if (start === 1) {
+                  if (displayValue.includes("(")) {
+                      displayValue = displayValue.toString().replace("√", "");
+                      displayValue = "Math.sqrt" + displayValue;
+                  }
+                  else if (start === 1) {
                       displayValue = "Math.sqrt(" + displayValue.substr(start, end - start) + ")" + displayValue.substr(end, displayValue.length);
                   } else {
                       displayValue = displayValue.substr(0, displayValue.toString().indexOf("√")) + "Math.sqrt("
@@ -129,7 +155,7 @@ class Calculator extends React.Component {
     } else {
       // 여긴 숫자
       this.setState({ displayValue: displayValue + key });
-    }
+      }
   };
 
   render() {
@@ -179,9 +205,19 @@ class Calculator extends React.Component {
             </Button>
           </ButtonGroup>
         </Panel>
-        {/* TODO: History componet를 이용해 map 함수와 Box styled div를 이용해 history 표시 */}
+            {/* TODO: History componet를 이용해 map 함수와 Box styled div를 이용해 history 표시 */}
+            <History historyValue={this.state.history} >
+                {
+                    this.state.history.map((x, i) =>
+                        <Box margin={10} padding="8px 0 0 0"
+                            
+                        >
+                            {x + ' = ' + evalFunc(x)}</Box>)
+                }
+               
+            </History>
+        </Container>
 
-      </Container>
     );
   }
 }
