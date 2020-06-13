@@ -32,9 +32,31 @@ const Box = styled.div`
 
 const evalFunc = function (string) {
     // eslint-disable-next-line no-new-func
-    string = string.toString().replace("×", "*");
-    string = string.toString().replace("÷", "/");
-    string = string.toString().replace("√", "Math.sqrt");
+    var results1 = [0];
+    var results2 = [1];
+    if (string.includes("÷")) {
+        results2 = string.match(/÷/g);
+    }
+    if (string.includes("×")) {
+        results1 = string.match(/×/g);
+    }
+
+
+    if (results1 != null && (results1.length >= 2)) {
+        var t1 = string.toString().indexOf("×");
+        var t2 = string.toString().lastIndexOf("×");
+        var t3 = t1 + (t2 - t1);
+        string = "(" + string.toString().substr(0, t3) + ")" + string.toString().substr(t3, string.length - t3);
+    }
+    else if (results2 != null && (results2.length >= 2)) {
+        var t1 = string.toString().indexOf("÷");
+        var t2 = string.toString().lastIndexOf("÷");
+        var t3 = t1 + (t2 - t1);
+        string = "(" + string.toString().substr(0, t3) + ")" + string.toString().substr(t3, string.length - t3);
+    }
+    string = string.toString().split('×').join('*');
+    string = string.toString().split('÷').join('/');
+    string = string.toString().split('√').join('Math.sqrt');
     return new Function("return (" + string + ")")();
 };
 
