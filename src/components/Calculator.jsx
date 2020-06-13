@@ -29,9 +29,9 @@ const Box = styled.div`
   }
 `;
 
-const evalFunc = function(string) {
+const evalFunc = function (string) {
   // eslint-disable-next-line no-new-func
-  return new Function("return (" + string + ")")();
+    return new Function("return (" + string + ")")();
 };
 
 class Calculator extends React.Component {
@@ -56,26 +56,49 @@ class Calculator extends React.Component {
         this.setState({ displayValue });
       },
       // TODO: 제곱근 구현
-      "√": () => {},
+      "√": () => {
+          if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+              this.setState({ displayValue: displayValue + "√" });
+          }
+        },
       // TODO: 사칙연산 구현
-      "÷": () => {},
-      "×": () => {},
-      "-": () => {},
+       "÷": () => {
+           if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+               this.setState({ displayValue: displayValue + "÷" });
+           }
+        },
+        "×": () => {
+            if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+                this.setState({ displayValue: displayValue + "×" });
+                //this.setState({ displayValue: displayValue + "*" });
+            }
+        },
+      "-": () => {
+          if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+              this.setState({ displayValue: displayValue + "-" });
+          }
+        },
       "+": () => {
         // + 연산 참고하여 연산 구현
         if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
-          this.setState({ displayValue: displayValue + "+" });
+            this.setState({ displayValue: displayValue + "+" });
         }
       },
       "=": () => {
-        if (lastChar !== "" && operatorKeys.includes(lastChar)) {
+          if (lastChar !== "" && operatorKeys.includes(lastChar)) {
           displayValue = displayValue.substr(0, displayValue.length - 1);
-        } else if (lastChar !== "") {
-          displayValue = evalFunc(displayValue);
-        }
+          } else if (lastChar !== "") {   
+              displayValue = displayValue.toString().replace("×", "*");
+              displayValue = displayValue.toString().replace("÷", "/");
+              displayValue = evalFunc(displayValue);
+          }
         this.setState({ displayValue });
       },
-      ".": () => {},
+        ".": () => {
+            if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+                this.setState({ displayValue: displayValue + "." });
+            }
+      },
       "0": () => {
         if (Number(displayValue) !== 0) {
           displayValue += "0";

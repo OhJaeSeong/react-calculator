@@ -2,7 +2,7 @@
   "name": "first-react-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://OhJaeSeong.github.io/React-Calculator/",
+  "homepage": "https://ohjaeseong.github.io/react-calculator/",
   "dependencies": {
     "@testing-library/react": "^10.2.0",
     "@types/styled-components": "^4.0.3",
