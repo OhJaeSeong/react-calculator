@@ -57,9 +57,9 @@ class Calculator extends React.Component {
       },
       // TODO: 제곱근 구현
       "√": () => {
-          if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
+          //if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
               this.setState({ displayValue: displayValue + "√" });
-          }
+          //d}
         },
       // TODO: 사칙연산 구현
        "÷": () => {
@@ -90,6 +90,19 @@ class Calculator extends React.Component {
           } else if (lastChar !== "") {   
               displayValue = displayValue.toString().replace("×", "*");
               displayValue = displayValue.toString().replace("÷", "/");
+              if (displayValue.includes("√")) {
+                  let start = displayValue.toString().indexOf("√") + 1;
+                  let end = start+1;
+                  while (displayValue.substr(end, 1) !== "" && displayValue.substr(end, 1) >= '0' && displayValue.substr(end, 1) <= '9') {
+                      end = end + 1;
+                  }
+                  if (start === 1) {
+                      displayValue = "Math.sqrt(" + displayValue.substr(start, end - start) + ")" + displayValue.substr(end, displayValue.length);
+                  } else {
+                      displayValue = displayValue.substr(0, displayValue.toString().indexOf("√")) + "Math.sqrt("
+                          + displayValue.substr(start, end - start) + ")" + displayValue.substr(end, displayValue.length);
+                  }
+              }
               displayValue = evalFunc(displayValue);
           }
         this.setState({ displayValue });
@@ -125,11 +138,14 @@ class Calculator extends React.Component {
         <Panel>
           <Display displayValue={this.state.displayValue} />
           <ButtonGroup onClickButton={this.onClickButton}>
-            <Button size={2} color="gray">
+            <Button size={1} color="gray">
               AC
             </Button>
             <Button size={1} color="gray">
               BS
+            </Button>
+            <Button size={1} color="gray">
+              √
             </Button>
             <Button size={1} color="gray">
               ÷
