@@ -210,7 +210,7 @@ class Calculator extends React.Component {
                 {
                     this.state.history.map((x, i) =>
                         <Box margin={10} padding="8px 0 0 0"
-                            
+                            onClick={() => this.setState({ displayValue :x })}
                         >
                             {x + ' = ' + evalFunc(x)}</Box>)
                 }
