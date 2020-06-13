@@ -96,7 +96,11 @@ class Calculator extends React.Component {
       },
         ".": () => {
             if (lastChar !== "" && !operatorKeys.includes(lastChar)) {
-                this.setState({ displayValue: displayValue + "." });
+                if (displayValue.includes(".")) {
+
+                } else {
+                    this.setState({ displayValue: displayValue + "." });
+                }
             }
       },
       "0": () => {
